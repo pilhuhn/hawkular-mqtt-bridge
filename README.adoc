@@ -9,7 +9,7 @@ image::bridge_arch.png[Architecture overview]
 The bridge registers with the MQTT broker and listens on `/hawkular/+` topics.
 Metric arriving on `/hawkular/metrics` are forwarded as such and registration
 messages on `/hawkular/register` are used to register the external resource
-like an ESP8622 micro controler with a thermo sensor are added to the Hawkular
+like an ESP8622 micro controller with a thermo sensor are added to the Hawkular
 inventory.
 
 Future versions of the bridge will also be able to set up alerts.

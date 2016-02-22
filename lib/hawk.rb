@@ -6,6 +6,7 @@ require 'hawkular_all'
 INVENTORY_BASE = 'http://localhost:8080/hawkular/inventory'
 METRICS_BASE = 'http://localhost:8080/hawkular/metrics'
 CREDS = {username: 'jdoe', password: 'password'}
+BROKER = 'snert'
 
 @inv_client = Hawkular::Inventory::InventoryClient.new(INVENTORY_BASE, CREDS)
 my_tenant = @inv_client.get_tenant
@@ -46,16 +47,16 @@ def register_resource(_topic, message)
   m_type = data['mt']
   metric = data['m']
 
-  metric_type = @inv_client.create_metric_type feed, m_type['id'], m_type['type'], m_type['unit'], m_type['collectionInterval']
+  d_type = m_type['type']
+  unit = m_type['unit']
+  metric_type = @inv_client.create_metric_type feed, m_type['id'], d_type, unit, m_type['collectionInterval']
 
-  m = @inv_client.create_metric_for_resource feed, metric['id'], metric_type.path, resource.id
-
-  puts m.to_s
+  @inv_client.create_metric_for_resource feed, metric['id'], metric_type.path, resource.id
 
 end
 
 
-MQTT::Client.connect('snert') do |c|
+MQTT::Client.connect(BROKER) do |c|
 
   c.subscribe('/hawkular/+')
 
