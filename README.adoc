@@ -20,3 +20,40 @@ The following is an example registration message:
 
 [source,json]
 include::esp_register_msg.json[An example registration message]
+
+== Running
+
+----
+$ ruby lib/hawk.rb
+----
+
+== Example client
+
+In `examples/esp8266/lua` you will find a LUA script that
+you can upload to e.g. an https://www.adafruit.com/products/2471[Adafruit Huzzah ESP]
+
+You should update the firmware to something much newer
+than 0.9.5 that the Huzzah comes with.
+Client code needs the cjson, mqtt,net,node,ow,tmr and wifi modules
+
+.Firmware info of my Huaazh ESP
+----
+NodeMCU custom build by frightanic.com
+	branch: master
+	commit: c8037568571edb5c568c2f8231e4f8ce0683b883
+	SSL: false
+	modules: cjson,file,gpio,i2c,mqtt,net,node,ow,rtcmem,rtctime,sntp,tmr,uart,wifi,ws2812
+ build 	built on: 2016-02-18 08:33
+ powered by Lua 5.1.4 on SDK 1.4.0
+----
+
+When you run the code and have a subscriber on `/hawkular/+` you should see messages like
+
+.MQTT Messages sent from the board
+----
+{"rt":"esp8266","r":"mcu16617927","mt":{"id":"thermo"},"feed":16617927,"m":{"mt":"thermo","id":"16617927:40.176.91.120.5.0.0.125"}} <1>
+16617927:40.176.91.120.5.0.0.125 25.4375  <2>
+16617927:40.176.91.120.5.0.0.125 25.5000  <2>
+----
+<1> Registration
+<2> Metric data
