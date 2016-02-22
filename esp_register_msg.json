@@ -1,0 +1,20 @@
+// Payload sent by a IoT device to register
+
+{"feed": "mcu123",
+  "rt":"esp8266",
+  "r":"mcu123",
+  "mt":{
+    "id":"thermo",
+    "unit":"NONE",
+    "type":"GAUGE",
+    "collectionInterval":0
+  },
+  "m":{
+    "id":"thermo1",
+    "mt":"thermo",
+    "alert":{
+      "c":">",
+      "v":26.0
+    }
+  }
+}
