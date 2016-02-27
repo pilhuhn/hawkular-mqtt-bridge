@@ -139,7 +139,7 @@ end
 -- register with Hawkular
 function register()
 
-    local tab = { feed = "esp" .. node.chipid(),
+    local tab = { feed = "esp"..node.chipid(),
             rt = "esp8266",
             r = "mcu"..node.chipid(),
             mt = {
