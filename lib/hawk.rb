@@ -51,7 +51,7 @@ def register_resource(_topic, message)
   unit = m_type['unit']
   metric_type = @inv_client.create_metric_type feed, m_type['id'], d_type, unit, m_type['collectionInterval']
 
-  @inv_client.create_metric_for_resource feed, metric['id'], metric_type.path, resource.id
+  @inv_client.create_metric_for_resource feed, metric['id'], metric_type.path, resource.id, metric['na']
 
 end
 

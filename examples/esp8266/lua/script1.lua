@@ -147,6 +147,7 @@ function register()
             },
             m = {
                 mt = "thermo",
+                na = "thermo_"..format_ow_addr(addr),
                 id = getMetricName()
             }
     }
