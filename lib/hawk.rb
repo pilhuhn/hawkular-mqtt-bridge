@@ -21,7 +21,9 @@ def process_metric(message)
     return
   end
 
-  data = [{id: fields[0], data: [{ value: fields[1]}]}]
+  data_point = {value: fields[1]}
+  data_point[timestamp: fields[2]*1000] if fields.size ==3 # incoming: seconds since epoch, required: ms
+  data = [{id: fields[0], data: [data_point]}]
   @metrics_client.push_data(gauges: data)
 end
 

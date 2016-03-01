@@ -13,6 +13,7 @@ pin = 6 -- data pin of the DS1820 (ESP pin)
 SSID = "CHANGEME"     -- Wifi SSID
 PASSWORD = "CHANGEME" -- WIfi Password
 BROKER = "1.2.3.4"    -- IP of your MQTT broker
+NTP_SERVER = "17.253.54.125" -- NTP server to use
 --
 
 
@@ -38,6 +39,8 @@ function wifi_start()
           tmr.delay(10000) -- wait 100ms per round
         until (status == 5) or (count > 100)
     end
+    -- now that we have wifi get current time via NTP
+    sntp.sync(NTP_SERVER)
 end
 
 -- Format the onewire address
@@ -171,10 +174,13 @@ function send_temperature()
     local temp = get_temp(pin,addr)
     local message  =  getMetricName() .." "..temp
 
+    -- attach timestamp as sec since epoch
+    local sec,usec = rtctime.get()
+    message = message.." "..sec
+
     mq:publish(metric_topic, message, 1, 0, function(pub)
         print("temp sent")
     end)
-
 end
 
 
