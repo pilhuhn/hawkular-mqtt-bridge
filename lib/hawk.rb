@@ -9,7 +9,6 @@ CREDS = {username: 'jdoe', password: 'password'}
 BROKER = 'snert'
 
 @inv_client = Hawkular::Inventory::InventoryClient.new(INVENTORY_BASE, CREDS)
-my_tenant = @inv_client.get_tenant
 @metrics_client = Hawkular::Metrics::Client.new(METRICS_BASE, CREDS)
 
 @queue = []
@@ -75,6 +74,10 @@ def register_resource(_topic, message)
   metric_type = @inv_client.create_metric_type feed, m_type['id'], d_type, unit, m_type['collectionInterval']
 
   @inv_client.create_metric_for_resource feed, metric['id'], metric_type.path, resource.id, metric['na']
+
+  # As we want a longer TTL, we also need to register in metrics for now :-(
+  # we chose 90 days retention
+  @metrics_client.gauges.create(id: metric['id'], dataRetention:90)
 
 end
 
