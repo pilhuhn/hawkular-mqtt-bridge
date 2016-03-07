@@ -12,8 +12,10 @@ BROKER = 'snert'
 my_tenant = @inv_client.get_tenant
 @metrics_client = Hawkular::Metrics::Client.new(METRICS_BASE, CREDS)
 
+@queue = []
 
 def process_metric(message)
+  # data format is : id value [timestamp]
   fields = message.split(' ')
 
   if fields.size < 2
@@ -22,9 +24,28 @@ def process_metric(message)
   end
 
   data_point = {value: fields[1]}
-  data_point[timestamp: fields[2]*1000] if fields.size ==3 # incoming: seconds since epoch, required: ms
+  if fields.size ==3
+    ts = fields[2]*1000 # incoming: seconds since epoch, required: ms
+  else
+    ts = Time.now.to_i * 1000 # current time in ms
+  end
+
+  data_point[timestamp: ts]
   data = [{id: fields[0], data: [data_point]}]
-  @metrics_client.push_data(gauges: data)
+  begin
+    @metrics_client.push_data(gauges: data)
+    # There was data queued, send it now
+    if @queue.size > 0
+      @queue.each do |_entry|
+        data = @queue.pop
+        @metrics_client.push_data(gauges:data)
+      end
+    end
+  rescue
+    # Pushing failed -> we need to spool and try later
+    @queue.push data
+  end
+
 end
 
 def register_resource(_topic, message)
