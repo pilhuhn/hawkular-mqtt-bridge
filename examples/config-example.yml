@@ -1,0 +1,11 @@
+---
+16617927:40.176.91.120.5.0.0.125:
+  :name: Living room
+  :alert:
+    :comparator: :gt
+    :value: 25
+dead beef:
+  :name: A dummy
+  :alert:
+    :comparator: :lt
+    :value: 55
