@@ -1,11 +1,12 @@
 require 'rubygems'
 require 'mqtt'
 require 'YAML'
-require 'hawkular_all'
+require 'hawkular/hawkular_client'
 
 #----------put your settings here ----
 HAWKULAR_BASE = 'http://localhost:8080/hawkular'
 CREDS = {username: 'jdoe', password: 'password'}
+TENANT= 'hawkular'
 BROKER = 'snert'
 @webhook_props = { url: 'http://172.31.7.177/',
                    method: 'POST' }
@@ -16,10 +17,10 @@ INVENTORY_BASE = "#{HAWKULAR_BASE}/inventory"
 METRICS_BASE = "#{HAWKULAR_BASE}/metrics"
 ALERTS_BASE = "#{HAWKULAR_BASE}/alerts"
 
-hash={:credentials => CREDS}
-@inv_client = Hawkular::Inventory::InventoryClient.new(hash)
-@metrics_client = Hawkular::Metrics::Client.new(METRICS_BASE, CREDS)
-@alerts_client = Hawkular::Alerts::AlertsClient.new(ALERTS_BASE, CREDS)
+
+@inv_client = Hawkular::Inventory::InventoryClient.new(INVENTORY_BASE, CREDS, {tenant: TENANT})
+@metrics_client = Hawkular::Metrics::Client.new(METRICS_BASE, CREDS, {tenant: TENANT})
+@alerts_client = Hawkular::Alerts::AlertsClient.new(ALERTS_BASE, CREDS, {tenant: TENANT})
 
 @queue = []
 
